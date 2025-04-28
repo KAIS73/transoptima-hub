@@ -1,17 +1,29 @@
 import express from 'express';
-const app = express();
+import { createServer } from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Health Check semplificato
+// Setup
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const app = express();
+const server = createServer(app);
+
+// Middleware
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Health check (obbligatorio per Render!)
 app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK',
-    message: 'Server base funzionante',
-    timestamp: new Date().toISOString()
-  });
+  res.status(200).send('OK');
 });
 
-// Avvio server
+// Rotta fallback per SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+});
+
+// Avvio server su 0.0.0.0
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server avviato su porta ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server avviato su http://0.0.0.0:${PORT}`);
 });
