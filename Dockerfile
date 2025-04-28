@@ -10,15 +10,14 @@ COPY package*.json ./
 # Installa dipendenze (solo produzione)
 RUN npm install --production
 
-# Copia tutto il resto
+# Copia tutto il resto del progetto
 COPY . .
 
 # Genera Prisma Client
 RUN npx prisma generate
 
-# Espone la porta 3000
+# Espone la porta per Render
 EXPOSE 3000
 
 # Comando di avvio
 CMD ["npm", "start"]
-
