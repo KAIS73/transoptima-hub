@@ -6,55 +6,79 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
-import initializeSocketIO from './socket.js';
 import { connectDB } from './db.js';
-
-// Environment variables
+import initializeSocketIO from './socket.js';
 import dotenv from 'dotenv';
+
+// Configurazione environment variables
 dotenv.config();
 
-// Initialize Express app
+// Inizializza Express
 const app = express();
 const server = createServer(app);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Connect to Database
+// Connessione al database
 connectDB();
 
-// Setup middlewares
+// Middleware
 app.use(morgan('combined'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(helmet());
-app.use(cors());
 
-// Rate limiter
+// CORS (configura in produzione!)
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.ALLOWED_ORIGINS?.split(',') || false
+    : '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+};
+app.use(cors(corsOptions));
+
+// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 15 * 60 * 1000, // 15 minuti
+  max: 100, // 100 richieste per IP
 });
 app.use(limiter);
 
-// Static folder setup
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// File statici (frontend)
+app.use(express.static(path.join(__dirname, '../public')));
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Health check
+// Health Check per Render (DEVE essere prima di app.listen!)
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK' });
+  res.status(200).json({ 
+    status: 'OK',
+    db: 'connected', // Aggiungi altri check se necessario
+    timestamp: new Date().toISOString() 
+  });
 });
 
-// SPA fallback (for React, Vue, etc)
+// API Routes (esempio)
+app.get('/api/status', (req, res) => {
+  res.json({ version: '1.0.0', environment: process.env.NODE_ENV });
+});
+
+// Fallback per SPA (React/Vue/Angular)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
-// Initialize Socket.io
+// Inizializza WebSocket
 initializeSocketIO(server);
 
-// Start server
+// Avvia server (usa 0.0.0.0 per Render!)
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`
+  🚀 Server avviato su porta ${PORT}
+  ➡️ Ambiente: ${process.env.NODE_ENV || 'development'}
+  ➡️ Health check: http://localhost:${PORT}/health
+  `);
+});
+
+// Gestione errori globale
+process.on('unhandledRejection', (err) => {
+  console.error('❌ Errore non gestito:', err);
 });
