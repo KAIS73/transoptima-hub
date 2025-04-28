@@ -1,0 +1,30 @@
+{
+    "name": "transoptima-hub",
+    "version": "1.0.0",
+    "description": "TransOptima Hub - Piattaforma Logistica",
+    "main": "src/server.js",
+    "type": "module",
+    "scripts": {
+      "start": "node src/server.js",
+      "dev": "nodemon src/server.js",
+      "prisma:generate": "prisma generate",
+      "prisma:migrate": "prisma migrate dev"
+    },
+    "dependencies": {
+      "@prisma/client": "^4.0.0",
+      "cors": "^2.8.5",
+      "dotenv": "^16.0.3",
+      "express": "^4.18.2",
+      "express-rate-limit": "^6.7.0",
+      "helmet": "^7.0.0",
+      "jsonwebtoken": "^9.0.0",
+      "morgan": "^1.10.0",
+      "redis": "^4.6.5",
+      "socket.io": "^4.7.1",
+      "winston": "^3.8.2"
+    },
+    "devDependencies": {
+      "nodemon": "^3.0.1",
+      "prisma": "^4.0.0"
+    }
+  }
