@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <meta name="description" content="Piattaforma TransOptima Hub per la gestione ottimizzata del trasporto merci">
+  <meta name="theme-color" content="#2d3e50">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="index, follow">
+  
+  <title>TransOptima Hub | Piattaforma per la Logistica Intelligente</title>
+  
+  <!-- Preload risorse critiche -->
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="/js/app.js" as="script">
+  
+  <!-- Favicon (generato su https://realfavicongenerator.net/) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2d3e50">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/style.css" media="all">
+  
+  <!-- Preconnessione a domini esterni se necessario -->
+  <!-- <link rel="preconnect" href="https://api.transoptima.com" crossorigin> -->
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Salta al contenuto principale</a>
+  
+  <header class="main-header" role="banner">
+    <div class="container">
+      <h1>Benvenuto su <span class="brand">TransOptima Hub</span></h1>
+      <p class="tagline">Soluzioni intelligenti per la logistica</p>
+    </div>
+  </header>
+
+  <main id="main-content" role="main">
+    <section class="status-section">
+      <div class="container">
+        <div class="status-card" aria-live="polite">
+          <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2m-2 15l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/>
+          </svg>
+          <p>Il sistema è online e operativo!</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="container">
+        <h2 class="section-title">Funzionalità principali</h2>
+        <div class="features-grid">
+          <article class="feature-card">
+            <h3>Monitoraggio in Tempo Reale</h3>
+            <p>Tracciamento preciso di veicoli e merci</p>
+          </article>
+          <article class="feature-card">
+            <h3>Ottimizzazione Percorsi</h3>
+            <p>Riduzione tempi e costi di trasporto</p>
+          </article>
+          <article class="feature-card">
+            <h3>Analisi Dati</h3>
+            <p>Reportistica avanzata per decisioni informate</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer" role="contentinfo">
+    <div class="container">
+      <p>&copy; <span id="current-year"></span> TransOptima Hub. Tutti i diritti riservati.</p>
+      <nav class="footer-nav" aria-label="Navigazione secondaria">
+        <ul>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Termini di Servizio</a></li>
+          <li><a href="/contact">Contatti</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- JavaScript con defer e fallback per non-blocking loading -->
+  <script src="/js/app.js" defer></script>
+  <script>
+    // Polyfill per elementi mancanti
+    document.addEventListener('DOMContentLoaded', function() {
+      // Anno corrente nel footer
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      
+      // Controllo stato connessione
+      if('connection' in navigator) {
+        const connection = navigator.connection;
+        if(connection.effectiveType === 'slow-2g' || connection.saveData === true) {
+          // Riduci carico per connessioni lente
+          console.log('Connessione lenta rilevata - ottimizzazione in corso');
+        }
+      }
+    });
+    
+    // Service Worker registration
+    if('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('ServiceWorker registrato con successo:', registration.scope);
+        }).catch(err => {
+          console.log('Registrazione ServiceWorker fallita:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
