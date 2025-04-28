@@ -1,21 +1,24 @@
-# Usa Node.js ufficiale
+# Costruzione ambiente
 FROM node:18-alpine
 
-# Crea una directory di lavoro
+# Crea cartella di lavoro
 WORKDIR /app
 
-# Copia package.json e installa le dipendenze
+# Copia solo i pacchetti
 COPY package*.json ./
-RUN npm install
 
-# Copia il resto del codice
+# Installa dipendenze (solo produzione)
+RUN npm install --production
+
+# Copia tutto il resto
 COPY . .
 
-# Genera Prisma Client (se usi Prisma)
+# Genera Prisma Client
 RUN npx prisma generate
 
 # Espone la porta 3000
 EXPOSE 3000
 
-# Avvia il server
+# Comando di avvio
 CMD ["npm", "start"]
+
