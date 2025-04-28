@@ -1,23 +1,14 @@
-# Costruzione ambiente
 FROM node:18-alpine
-
-# Crea cartella di lavoro
 WORKDIR /app
 
-# Copia solo i pacchetti
-COPY package*.json ./
+# 1. Copia SOLO i file necessari per l'installazione
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
 
-# Installa dipendenze (solo produzione)
-RUN npm install --production
-
-# Copia tutto il resto del progetto
+# 2. Copia il resto del codice
 COPY . .
 
-# Genera Prisma Client
-RUN npx prisma generate
-
-# Espone la porta per Render
+# 3. Esponi la porta e avvia
+ENV NODE_ENV=production
 EXPOSE 3000
-
-# Comando di avvio
-CMD ["npm", "start"]
+CMD ["node", "src/server.js"]
