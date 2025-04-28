@@ -28,7 +28,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// 🚀 Avvia server su IP 0.0.0.0 (Richiesto da Render)
+// 🚀 Avvio server su IP 0.0.0.0 (richiesto da Render)
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server avviato sulla porta ${PORT}`);
