@@ -1,25 +1,21 @@
-# Builder stage
-FROM node:18-alpine as builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-
-# Production stage
+# Usa Node.js ufficiale
 FROM node:18-alpine
+
+# Crea una directory di lavoro
 WORKDIR /app
 
-ENV NODE_ENV=production
-ENV PORT=3000
+# Copia package.json e installa le dipendenze
+COPY package*.json ./
+RUN npm install
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
+# Copia il resto del codice
+COPY . .
 
-USER node
+# Genera Prisma Client (se usi Prisma)
+RUN npx prisma generate
+
+# Espone la porta 3000
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:3000/health || exit 1
 
-CMD ["node", "dist/server.js"]
+# Avvia il server
+CMD ["npm", "start"]
